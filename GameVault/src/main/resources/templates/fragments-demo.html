@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo de Fragmentos</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body class="container">
+    <h1 class="text-gradient">🎮 Clase: Fragmentos en Thymeleaf</h1>
+    
+    <div class="panel" style="margin-bottom: 30px;">
+        <h3>1. Origen (El Fragmento)</h3>
+        <p>Definiremos un fragmento a partir de la siguiente caja roja:</p>
+        
+        <div th:fragment="miFragmento" style="background: linear-gradient(to right, var(--primary), var(--accent)); color: white; padding: 10px; border-radius: 4px;">
+            ¡Hola! Soy el contenido del fragmento. Fui diseñado una sola vez.
+        </div>
+    </div>
+
+    <hr>
+    <h2>2. Ejemplos de Uso</h2>
+
+    <div class="panel" style="margin-bottom: 20px;">
+        <h3>Usando replace </h3>
+        <p>El div contenedor original <b>desaparece</b> y es reemplazado completamente por el div del fragmento.</p>
+        <div th:replace="~{:: miFragmento}">
+            (Este texto y este div desaparecerán)
+        </div>
+    </div>
+
+    <div class="panel" style="margin-bottom: 20px;">
+        <h3>Usando insert</h3>
+        <p>El fragmento se inserta <b>dentro</b> del div contenedor original. El div original se conserva.</p>
+        <div th:insert="~{:: miFragmento}" style="border: 2px dashed #00ffcc; padding: 10px;">
+            (Este texto desaparecerá, pero el div con borde punteado se queda y envuelve al fragmento)
+        </div>
+    </div>
+    <div class="panel" style="margin-bottom: 20px;">
+        <h3>Usando include</h3>
+        <p>El fragmento se incluye <b>dentro</b> del div contenedor original. El div original se conserva.</p>
+        <div th:include="~{:: miFragmento}" style="border: 2px dashed #00ffcc; padding: 10px;">
+            (Este texto desaparecerá, pero el div con borde punteado se queda y envuelve al fragmento)
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<th:block th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<title> Catalogo de videojuegos - GameValult</title>
+<main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 class="text-gradient">Catálogo de Juegos</h2>
+        <a href="/juegos/nuevo" class="btn btn-primary">+ Nuevo Juego</a>
+    </div>
+    
+    <div class="grid">
+        
+        <div th:each="juego: ${juegos}" class="panel" style="padding: 0; overflow: hidden;">
+            <img th:src="${#strings.startsWith(juego.portadaUrl, 'http')} ? ${juego.portadaUrl} : @{/uploads/{img}(img=${juego.portadaUrl})}">
+
+            <img src="https://via.placeholder.com/300x400?text=Juego" 
+                 alt="Portada" 
+                 style="width: 100%; height: 300px; object-fit: cover; display: block;" />
+            
+            <div style="padding: 20px;">
+                <h3 th:text="${juego.titulo}" style="margin-top: 0; margin-bottom: 10px;">Título del Juego</h3>
+                <p th:text="${juego.descripcion}" style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin: 0;">Descripción breve del juego.</p>
+            </div>
+        </div>
+
+    </div>
+</main>
+</th:block>
