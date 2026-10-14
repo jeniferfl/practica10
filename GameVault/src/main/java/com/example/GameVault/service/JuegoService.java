@@ -1,5 +1,7 @@
 package com.example.GameVault.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.GameVault.model.Juego;
 import com.example.GameVault.repository.JuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ public class JuegoService {
     // de forma automática, sin que nosotros hagamos 'new JuegoRepository()'.
     @Autowired
     private JuegoRepository juegoRepository;
+    private Cloudinary cloudinary;
 
 
 
@@ -90,11 +93,18 @@ public class JuegoService {
         }
     }
 
+    public void eliminarJuego(Long id) {
+        juegoRepository.deleteById(id);
+
+    }
+    public Juego buscarPorId(Long id) {
+        return juegoRepository.findById(id).orElse(null);
+    }
 
     /**
      * Lógica para subir la imagen a Cloudinary.
      * Retorna la URL segura de la imagen alojada en la nube.
-
+    }*/
     private String guardarImagenCloudinary(MultipartFile portada) {
         try {
             // Sube el archivo a Cloudinary
@@ -106,7 +116,8 @@ public class JuegoService {
             e.printStackTrace();
             return "default.png";
         }
-    }*/
+    }
+
 }
 
 
