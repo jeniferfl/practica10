@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>GameVault</title>
@@ -11,8 +11,17 @@
         <a href="/juegos" class="nav-brand">🎮 GameVault</a>
         <div class="nav-links">
             <a href="/juegos">Catálogo</a>
-            <a href="/juegos/nuevo">Subir Juego</a>
             <a href="/fragments-demo" style="color: var(--success); margin-left:20px;">[Teoría]</a>
+            <th:block th:if="${session.usuario_id == null}">
+                <a href="@{/login}">Iniciar Sesion</a>
+                <a href="@{/resgitro}">Registrarse</a>
+            </th:block>
+            <th:block th:if="${session.usuario_id != null}">
+                <a href="@{/mis-juegos}">Mis juegos</a>
+                <a href="@{/juegos/nuevo}">Subir Juego</a>
+                <a href="@{/resgitro}"></a>
+            </th:block>
+
         </div>
     </nav>
 
