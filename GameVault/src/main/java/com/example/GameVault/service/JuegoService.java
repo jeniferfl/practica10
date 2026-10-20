@@ -51,7 +51,6 @@ public class JuegoService {
             urlImagen = guardarImagenLocal(portada);
         }
 
-
         juego.setPortadaUrl(urlImagen);
 
         // Guardamos el objeto en la base de datos
@@ -79,13 +78,9 @@ public class JuegoService {
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
-
-
             String nombreArchivo = UUID.randomUUID().toString() + "_" + portada.getOriginalFilename();
             Path filePath = uploadPath.resolve(nombreArchivo);
             Files.copy(portada.getInputStream(), filePath);
-
-
             return nombreArchivo; // Retornamos solo el nombre (ej. "123_foto.png")
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,11 +88,14 @@ public class JuegoService {
         }
     }
 
+    // Método para eliminar un juego
     public void eliminarJuego(Long id) {
         juegoRepository.deleteById(id);
-
     }
-    public Juego buscarPorId(Long id) {
+
+
+    // Método para buscar un juego en específico
+    public Juego obtenerJuegoPorId(Long id) {
         return juegoRepository.findById(id).orElse(null);
     }
 

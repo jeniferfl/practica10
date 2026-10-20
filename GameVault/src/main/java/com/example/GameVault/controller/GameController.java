@@ -69,42 +69,72 @@ public class GameController {
         return "redirect:/juegos";
     }
 
-    @PostMapping("/juegos/elimiar/{id}")
-    public String eliminarJuego(@PathVariable Long id){
-        juegoService.eliminarJuego(id);
-        return "redirect:/juegos";
 
+    @PostMapping("/juegos/eliminar/{id}")
+    public String eliminarJuego(@PathVariable Long id) {
+        Juego juego = juegoService.obtenerJuegoPorId(id);
+        Usuario logueado = usuarioService.obtenerUsuarioLogueado();
+
+        // Solo procedemos a borrar si el usuario logueado es el dueño
+        if (juego != null && juego.getUsuario().getId().equals(logueado.getId())) {
+            juegoService.eliminarJuego(id);
+        }
+
+        return "redirect:/mis-juegos";
     }
+
 
     @GetMapping("/juegos/editar/{id}")
-    public String editarJuego(@PathVariable Long id, Model model){
-        Juego juego = juegoService.buscarPorId(id);
-        model.addAttribute("juego", juego);
-                return "redirect:/formulario";
+    public String editarJuego(@PathVariable Long id, Model model) {
+        Juego juego = juegoService.obtenerJuegoPorId(id);
+        Usuario logueado = usuarioService.obtenerUsuarioLogueado();
+
+        // Si el juego existe y el dueño coincide, mostramos el formulario
+        if (juego != null && juego.getUsuario().getId().equals(logueado.getId())) {
+            model.addAttribute("juego", juego);
+            return "formulario"; // Reutilizamos nuestra vista de formulario
+        }
+
+        // Si intenta editar un juego ajeno, lo devolvemos a su panel
+        return "redirect:/mis-juegos";
     }
+
+
     @PostMapping("/juegos/editar/{id}")
-    public String editarJuego(
-                @PathVariable Long id,
-                @RequestParam("titulo") String titulo,
-                @RequestParam("descripcion") String descripcion,
-                @RequestParam("precio") Double precio,
-                @RequestParam("categoria") String categoria,
-                @RequestParam(value = "portada", required = false) MultipartFile portada) {
-        Juego juego = this.juegoService.buscarPorId(id);
-        juego.setTitulo(titulo);
-        juego.setDescripcion(descripcion);
-        juego.setPrecio(precio);
-        juego.setCategoria(categoria);
-        juegoService.guardarJuego(juego, portada);
+    public String actualizarJuego(@PathVariable Long id,
+                                  @RequestParam("titulo") String titulo,
+                                  @RequestParam("descripcion") String descripcion,
+                                  @RequestParam("precio") Double precio,
+                                  @RequestParam("categoria") String categoria,
+                                  @RequestParam(value = "portada", required = false) MultipartFile portada) {
 
+        Juego juegoExistente = juegoService.obtenerJuegoPorId(id);
+        Usuario logueado = usuarioService.obtenerUsuarioLogueado();
 
-        // Redirigimos a la lista de juegos (Patrón PRG - Post/Redirect/Get)
-        return "redirect:/juegos";
+        // Verificamos propiedad nuevamente antes de modificar
+        if (juegoExistente != null && juegoExistente.getUsuario().getId().equals(logueado.getId())) {
+            juegoExistente.setTitulo(titulo);
+            juegoExistente.setDescripcion(descripcion);
+            juegoExistente.setPrecio(precio);
+            juegoExistente.setCategoria(categoria);
+
+            juegoService.guardarJuego(juegoExistente, portada);
+        }
+
+        return "redirect:/mis-juegos";
     }
-    @GetMapping({"/mis-juegos"})
-    public String misjuegos(Model model){
-        model.addAttribute("usuarios", this.usuarioService.obtenerUsuarioLogueado());
+
+    @GetMapping("/mis-juegos")
+    public String misjuegos(Model model) {
+        Usuario usuario = this.usuarioService.obtenerUsuarioLogueado();
+
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("usuario", usuario);
         model.addAttribute("juegos", juegoService.listarTodos());
+
         return "mis-juegos";
     }
 
