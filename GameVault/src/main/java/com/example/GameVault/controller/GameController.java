@@ -69,36 +69,24 @@ public class GameController {
         return "redirect:/juegos";
     }
 
-
-    @PostMapping("/juegos/eliminar/{id}")
-    public String eliminarJuego(@PathVariable Long id) {
-        Juego juego = juegoService.obtenerJuegoPorId(id);
-        Usuario logueado = usuarioService.obtenerUsuarioLogueado();
-
-        // Solo procedemos a borrar si el usuario logueado es el dueño
-        if (juego != null && juego.getUsuario().getId().equals(logueado.getId())) {
-            juegoService.eliminarJuego(id);
-        }
-
-        return "redirect:/mis-juegos";
-    }
-
-
     @GetMapping("/juegos/editar/{id}")
     public String editarJuego(@PathVariable Long id, Model model) {
         Juego juego = juegoService.obtenerJuegoPorId(id);
         Usuario logueado = usuarioService.obtenerUsuarioLogueado();
 
         // Si el juego existe y el dueño coincide, mostramos el formulario
-        if (juego != null && juego.getUsuario().getId().equals(logueado.getId())) {
+        if (juego != null
+                && juego.getUsuario() != null
+                && logueado != null
+                && juego.getUsuario().getId().equals(logueado.getId())) {
+
             model.addAttribute("juego", juego);
-            return "formulario"; // Reutilizamos nuestra vista de formulario
+            return "formulario";
         }
 
         // Si intenta editar un juego ajeno, lo devolvemos a su panel
         return "redirect:/mis-juegos";
     }
-
 
     @PostMapping("/juegos/editar/{id}")
     public String actualizarJuego(@PathVariable Long id,
@@ -123,6 +111,23 @@ public class GameController {
 
         return "redirect:/mis-juegos";
     }
+    @PostMapping("/juegos/eliminar/{id}")
+    public String eliminarJuego(@PathVariable Long id) {
+
+        Juego juego = juegoService.obtenerJuegoPorId(id);
+        Usuario logueado = usuarioService.obtenerUsuarioLogueado();
+
+        if (juego == null || juego.getUsuario() == null || logueado == null) {
+            return "redirect:/mis-juegos";
+        }
+
+        if (juego.getUsuario().getId().equals(logueado.getId())) {
+            juegoService.eliminarJuego(juego.getId());
+        }
+
+        return "redirect:/mis-juegos";
+    }
+
 
     @GetMapping("/mis-juegos")
     public String misjuegos(Model model) {

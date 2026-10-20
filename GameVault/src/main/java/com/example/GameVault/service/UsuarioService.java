@@ -14,49 +14,48 @@ import java.util.Optional;
  */
 @Service
 public class UsuarioService {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private HttpSession session;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private HttpSession session;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     /**
      * Registra un usuario guardando su contraseña cifrada con BCrypt.
      */
     public Usuario registrarUsuario(Usuario usuario) {
+        // Encriptamos la contraseña con BCrypt antes de guardar en la BD
         usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
         return usuarioRepository.save(usuario);
     }
+
 
     /**
      * Devuelve el usuario si el correo existe y la contraseña coincide; si no, null.
      */
     public Usuario autenticarUsuario(String email, String password) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            // matches() cifra la contraseña escrita y la compara con el hash guardado
+            // Verificamos el texto ingresado contra el Hash de la BD
             if (passwordEncoder.matches(password, usuario.getContrasenia())) {
                 return usuario;
             }
         }
-        return null;
+        return null; // Credenciales inválidas
     }
+
     public Usuario obtenerUsuarioLogueado() {
-        Long id =(Long) session.getAttribute("usuario_id");
-        if (id != null) {
-            Optional <Usuario> usuarioDet = this.usuarioRepository.findById(id);
-            if (usuarioDet.isPresent()) {
-                return usuarioDet.get();
-            }
+        Long usuarioId = (Long) session.getAttribute("usuario_id");
+        if (usuarioId != null) {
+            return usuarioRepository.findById(usuarioId).orElse(null);
         }
         return null;
-
     }
+
 
 
 }

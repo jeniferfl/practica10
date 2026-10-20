@@ -15,45 +15,40 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class AuthController {
-
     @Autowired
     private UsuarioService usuarioService;
-
+    // --- VISTAS GET ---
     @GetMapping("/login")
-    public String mostrarLogin() {
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String procesarLogin(@RequestParam("email") String email,
-                                @RequestParam("password") String password,
-                                Model model,
-                                HttpSession session) {
-
-        Usuario usuario = usuarioService.autenticarUsuario(email, password);
-
-        if (usuario != null) {
-            // Las credenciales son correctas, pero todavía no recordamos quién es:
-            // en cuanto cambie de página, la aplicación lo olvida.
-            model.addAttribute("mensaje", "Bienvenido, " + usuario.getNombre());
-            session.setAttribute("usuario_id", usuario.getId());
-            return "redirect:/mis-juegos";
-        } else {
-            model.addAttribute("error", "Credenciales inválidas. Inténtalo de nuevo.");
-            return "login";
-        }
-    }
-
+    public String mostrarLogin() { return "login"; }
     @GetMapping("/registro")
     public String mostrarRegistro(Model model) {
-        // Objeto vacío que el formulario llena con th:field
         model.addAttribute("usuario", new Usuario());
         return "registro";
     }
-
+    // --- PROCESOS POST ---
     @PostMapping("/registro")
     public String procesarRegistro(Usuario usuario) {
         usuarioService.registrarUsuario(usuario);
         return "redirect:/login?registrado=true";
     }
+    @PostMapping("/login")
+    public String procesarLogin(@RequestParam("email") String email,
+                                @RequestParam("password") String password,
+                                HttpSession session, Model model) {
+        Usuario usuario = usuarioService.autenticarUsuario(email, password);
+        if (usuario != null) {
+            // ¡ÉXITO! Guardamos su "gafete" en la sesión del servidor
+            session.setAttribute("usuario_id", usuario.getId());
+            return "redirect:/mis-juegos";
+        } else {
+            model.addAttribute("error", "Credenciales inválidas.");
+            return "login";
+        }
+    }
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // Destruimos el gafete
+        return "redirect:/";
+    }
 }
+

@@ -88,21 +88,18 @@ public class JuegoService {
         }
     }
 
-    // Método para eliminar un juego
-    public void eliminarJuego(Long id) {
-        juegoRepository.deleteById(id);
-    }
-
-
     // Método para buscar un juego en específico
     public Juego obtenerJuegoPorId(Long id) {
         return juegoRepository.findById(id).orElse(null);
     }
-
-    /**
-     * Lógica para subir la imagen a Cloudinary.
-     * Retorna la URL segura de la imagen alojada en la nube.
-    }*/
+    // Método para eliminar un juego
+    public void eliminarJuego(Long id) {
+        juegoRepository.deleteById(id);
+    }
+        /**
+         * Lógica para subir la imagen a Cloudinary.
+         * Retorna la URL segura de la imagen alojada en la nube.
+        }*/
     private String guardarImagenCloudinary(MultipartFile portada) {
         try {
             // Sube el archivo a Cloudinary

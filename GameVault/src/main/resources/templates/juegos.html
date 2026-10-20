@@ -7,7 +7,7 @@
         <!-- BARRA DE BÚSQUEDA -->
         <div style="margin-bottom: 30px;">
             <form action="/juegos" method="get" style="display: flex; gap: 10px;">
-                <input type="text" name="buscar" th:value="${busquedaActual}" placeholder="Buscar juego por título o categoría..." style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); background: var(--bg-surface); color: var(--text-color);">
+                <input type="text" name="buscar" th:value="${busquedaActual}" placeholder="Buscar juego por título o categoría..." style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); background: var(--bg-surface); /*color: var(--text-color)*/;">
                 <button type="submit" class="btn btn-secondary">Buscar</button>
                 <a th:if="${busquedaActual != null}" href="/juegos" class="btn btn-secondary" style="background: var(--bg-surface);">Limpiar</a>
             </form>
@@ -34,4 +34,5 @@
         </div>
     </main>
 </th:block>
+
 
