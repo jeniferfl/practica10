@@ -21,6 +21,10 @@
                 <div style="padding: 20px; display: flex; flex-direction: column; flex-grow: 1;">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                         <h3 th:text="${juego.titulo}" style="margin: 0;">Título del Juego</h3>
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">
+                            ID del juego:
+                            <span th:text="${juego.id}">1</span>
+                        </p>
                         <span th:text="${juego.precio != null ? '$' + juego.precio : 'Gratis'}" style="font-weight: bold; color: var(--primary);">Precio</span>
                     </div>
 
